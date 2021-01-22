@@ -1,0 +1,79 @@
+﻿<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/instascan/1.0.0/index.min.js"></script>
+	</head>
+	<body>
+		請選擇相機：<select id="CameraList"></select>
+		<video id="preview"></video><br/>
+		<input type="text" onfocus="SetFocusObj(this)"><br/>
+		<input type="text" onfocus="SetFocusObj(this)"><br/>
+		<input type="text" onfocus="SetFocusObj(this)"><br/>
+		<input type="text" onfocus="SetFocusObj(this)"><br/>
+		<input type="text" onfocus="SetFocusObj(this)"><br/>
+		<button onclick=StartScan();>掃描</button>&nbsp;<button onclick=CloseCamera();>關閉相機</button><BR/>
+		<button onclick=StartScan(0);>前相機</button>&nbsp;<button onclick=StartScan(1);>後相機</button><BR/>
+	</body>
+	<script type="text/javascript">
+		var focusObj = null;
+		let scanner = null;
+
+		function SetFocusObj(obj){
+			focusObj = obj;
+		}
+
+		function StartScan(index){
+			CloseCamera();
+			scanner = new Instascan.Scanner({
+	      continuous: true, // 連續掃描
+	      video: document.getElementById('preview'), // 預覽
+	      mirror:false,
+	      facingMode: {
+	        exact: "environment"
+	      }
+	    });
+	    
+	    scanner.addListener('scan', function (content) {
+	      console.log(content);
+	      try{
+	      	focusObj.value = content;	      
+	      }
+	      catch(e){}
+	    });
+	    
+	    Instascan.Camera.getCameras().then(function (cameras) {
+	    	var cameraList = document.getElementById("CameraList");
+	    	var camerasIndex = (index!=null)?index:parseInt(cameraList.value);
+	    	
+	      scanner.start(cameras[camerasIndex]); // [0] 前鏡頭 [1] 後鏡頭 
+	    }).catch(function (e) {
+	      console.error(e);
+	    });
+		}
+
+		
+		function GetCamera(){
+			Instascan.Camera.getCameras().then(function (cameras) {
+		      if (cameras.length > 0) {
+		      	var i;
+		      	var cameraList = document.getElementById("CameraList");
+		      	for(i=0;i<cameras.length;i++){
+		      		cameraList.add(new Option(cameras[i].name, i));
+		      	}
+		      } else {
+		        alert('沒有找到相機');
+		      }
+		    }).catch(function (e) {
+		      console.error(e);
+		    });
+		}
+		
+		function CloseCamera(){
+			if(scanner)
+				scanner.stop();
+		}
+		
+		GetCamera();
+		//# sourceURL=QRCode.html
+	</script>
+</html>
