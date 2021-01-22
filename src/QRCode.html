@@ -69,7 +69,8 @@
 		}
 		
 		function CloseCamera(){
-			scanner.stop();
+			if(scanner)
+				scanner.stop();
 		}
 		
 		GetCamera();
