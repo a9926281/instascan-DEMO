@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Decoding from camera stream</title>
+</head>
+
+<body>
+
+  <main class="wrapper" style="padding-top:2em">
+
+    <section class="container" id="demo-content">
+      <h1 class="title">Scan 1D/2D Code from Video Camera</h1>
+
+      <p>This example shows how to scan any supported 1D/2D code with ZXing javascript library from the device video
+        camera. If more
+        than one video input devices are available (for example front and back camera) the example shows how to read
+        them and use a select to change the input device.</p>
+
+      <div>
+        <a class="button" id="startButton">Start</a>
+        <a class="button" id="resetButton">Reset</a>
+      </div>
+
+      <div>
+        <video id="video" width="300" height="200" style="border: 1px solid gray"></video>
+      </div>
+
+      <div id="sourceSelectPanel" style="display:none">
+        <label for="sourceSelect">Change video source:</label>
+        <select id="sourceSelect" style="max-width:400px">
+        </select>
+      </div>
+
+      <label>Result:</label>
+      <pre><code id="result"></code></pre>
+    </section>
+
+  </main>
+
+  <script type="text/javascript" src="zxing-js"></script>
+  <script type="text/javascript">
+    window.addEventListener('load', function () {
+      let selectedDeviceId;
+	  //建立CodeReader物件
+      const codeReader = new ZXing.BrowserMultiFormatReader();
+      console.log('ZXing code reader initialized');
+	  //
+      codeReader.listVideoInputDevices()
+        .then((videoInputDevices) => {
+          const sourceSelect = document.getElementById('sourceSelect')
+          selectedDeviceId = videoInputDevices[0].deviceId
+          if (videoInputDevices.length >= 1) {
+			//每個裝置加到下拉選單
+            videoInputDevices.forEach((element) => {
+              const sourceOption = document.createElement('option')
+              sourceOption.text = element.label
+              sourceOption.value = element.deviceId
+              sourceSelect.appendChild(sourceOption)
+            })
+
+			//攝影機選單
+            sourceSelect.onchange = () => {
+              selectedDeviceId = sourceSelect.value;
+            };
+
+			//顯示選單
+            const sourceSelectPanel = document.getElementById('sourceSelectPanel');
+            sourceSelectPanel.style.display = 'block';
+          }
+
+		  //開始按鈕->啟動
+          document.getElementById('startButton').addEventListener('click', () => {
+		    //開始從畫面解碼
+            codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
+			  //成功及失敗callback
+              if (result) {
+                console.log(result);
+				//資料呈顯
+                document.getElementById('result').textContent = result.text;
+              }
+			  //異常事件(排除查無資料例外)
+              if (err && !(err instanceof ZXing.NotFoundException)) {
+                console.error(err);
+				//錯誤訊息呈顯
+                document.getElementById('result').textContent = err;
+              }
+            })
+            console.log(`Started continous decode from camera with id ${selectedDeviceId}`);
+          })
+
+		  //重設按鈕->關閉
+          document.getElementById('resetButton').addEventListener('click', () => {
+			//重設
+            codeReader.reset();
+            document.getElementById('result').textContent = '';
+            console.log('Reset.')
+          })
+
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    })
+  </script>
+
+</body>
+
+</html>
