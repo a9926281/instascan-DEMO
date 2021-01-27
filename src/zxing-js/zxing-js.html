@@ -21,8 +21,8 @@
         them and use a select to change the input device.</p>
 
       <div>
-        <button class="button" id="startButton">Start</button>
-        <button class="button" id="resetButton">Reset</button>
+        <button class="button" id="startButton" title="Start"></button>
+        <button class="button" id="resetButton" title="Reset"></button>
       </div>
 
       <div>
@@ -48,7 +48,7 @@
 	  //建立CodeReader物件
       const codeReader = new ZXing.BrowserMultiFormatReader();
       console.log('ZXing code reader initialized');
-	  //
+	  //取得裝置清單
       codeReader.listVideoInputDevices()
         .then((videoInputDevices) => {
           const sourceSelect = document.getElementById('sourceSelect')
@@ -56,10 +56,10 @@
           if (videoInputDevices.length >= 1) {
 			//每個裝置加到下拉選單
             videoInputDevices.forEach((element) => {
-              const sourceOption = document.createElement('option')
-              sourceOption.text = element.label
-              sourceOption.value = element.deviceId
-              sourceSelect.appendChild(sourceOption)
+              const sourceOption = document.createElement('option');
+              sourceOption.text = element.label;
+              sourceOption.value = element.deviceId;
+              sourceSelect.appendChild(sourceOption);
             })
 
 			//攝影機選單
@@ -97,14 +97,15 @@
 			//重設
             codeReader.reset();
             document.getElementById('result').textContent = '';
-            console.log('Reset.')
+            console.log('Reset.');
           })
 
         })
         .catch((err) => {
           console.error(err)
-        })
+        });
     })
+    //# sourceURL=zxing-js.html
   </script>
 
 </body>
