@@ -1,0 +1,28 @@
+<html>
+<head>
+<title></title>
+</head>
+<script type='text/javascript'>
+    function init() {
+        PaymentForm.submit();
+    }
+    //requestPath@loginEmpNo@loginCompanyCode@companyCode@slipNo@language
+    //http://tbsnuat.bc.synnex-grp.com:8080/TBS_V/Identity BC UAT
+    //https://tbsmuat.synnex-grp.com:4443/TBS_V/Identity BC UAT B2B
+    //http://192.168.209.21:11100/TBS_V/Identity BC SIT
+    //http://192.168.209.20:11100/
+    //http://localhost:8080
+    //views/rpm/esfpn/esfpn_main
+    //views/rpm/eire/eire_main
+    //views/fix/fxpe/fxpe_main
+    //views/rpm/escpn/escpn_main -- 報價
+</script>
+<body onload='init();'>
+    <form name='PaymentForm' method='GET' id='PaymentForm'
+        action='https://tbsm.synnex-grp.com/TBS_V/Identity'>
+        <br />
+        <input type=hidden name='parameter' value='{"quotePath":"views/rpm/escpn/escpn_main","companyCode":"20","mtNo":"MT3W200134","language":"CHT","carrierType":"","carrierId":"","userNumber":"","redirectBu":"TW"}'><br />
+        <input type=hidden name='token' value='zAAEayceUO6UvhLuIPfpU0BveZSNb80sHYJPOYoA8S4wvqcMmIikGxVWe/46A1KpsgGXeBx259R692iZ9ceJaA=='><br />
+    </form>
+</body>
+</html>
